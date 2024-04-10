@@ -1,0 +1,28 @@
+# Copyright © SixtyFPS GmbH <info@slint.dev>
+# SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-Slint-Royalty-free-1.1 OR LicenseRef-Slint-commercial
+
+[package]
+name = "slint-build"
+description = "Helper for Slint build script"
+authors.workspace = true
+edition.workspace = true
+homepage = "https://slint.rs"
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+categories = ["gui", "rendering::engine", "development-tools::build-utils"]
+
+[lib]
+path = "lib.rs"
+
+[features]
+default = []
+
+[dependencies]
+i-slint-compiler = { workspace = true, features = ["default", "rust", "display-diagnostics", "software-renderer"] }
+
+spin_on = "0.1"
+thiserror = "1"
+toml_edit = { workspace = true }
