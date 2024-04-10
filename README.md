@@ -47,6 +47,7 @@ cargo bundle --release
 This command bundles the application along with its dependencies into a single distributable directory.
 
 ## Project Structure
+```bash
 └── ffmpeg
     ├── Cargo.toml
     ├── README.md
@@ -97,3 +98,4 @@ This command bundles the application along with its dependencies into a single d
     │   └── video.rs
     ├── player.rs
     └── scene.slint
+```
