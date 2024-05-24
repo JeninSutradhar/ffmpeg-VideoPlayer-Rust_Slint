@@ -97,5 +97,5 @@ This command bundles the application along with its dependencies into a single d
     │   ├── audio.rs
     │   └── video.rs
     ├── player.rs
-    └── scene.slint
+    └── scene.slint (UI) 
 ```
