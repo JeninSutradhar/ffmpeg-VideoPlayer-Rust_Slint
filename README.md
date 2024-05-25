@@ -2,6 +2,9 @@
 
 A lightweight audio-video player built in Rust using FFmpeg libraries. This project demonstrates how to use FFmpeg with Rust to play back video files.
 
+![image](https://github.com/JeninSutradhar/ffmpeg-VideoPlayer-Rust_Slint/assets/111521642/8507dbad-fb04-4dab-a696-d52ab95159c8)
+
+
 ### Supported Builds -
 - Android
 - Windows
