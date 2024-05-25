@@ -1,6 +1,9 @@
 # FFmpeg Rust Video Player
 
-This is a lightweight audio-video player built in Rust using FFmpeg libraries. It demonstrates the usage of FFmpeg with Rust to play back video files.
+A lightweight audio-video player built in Rust using FFmpeg libraries. This project demonstrates how to use FFmpeg with Rust to play back video files.
+
+![ffmpeg_example](https://github.com/JeninSutradhar/ffmpeg-VideoPlayer-Rust_Slint/assets/111521642/3d3fafcd-83dc-4071-b113-c1bb8fc1e21f)
+
 
 ### Supported Builds -
 - Android
@@ -10,6 +13,7 @@ This is a lightweight audio-video player built in Rust using FFmpeg libraries. I
 - (wasm32)
 
 ## Necessary Libraries
+- Before building the application, you need to install the necessary libraries for your platform.
 
 This example application requires the following libraries:
 
@@ -35,6 +39,10 @@ Run vcpkg install ffmpeg --triplet x64-windows.
 Make sure VCPKG_ROOT is set to where vcpkg is installed.
 Make sure %VCPKG_ROOT%\installed\x64-windows\bin is in your PATH.
 ```
+
+- WebAssembly (wasm32)
+For WebAssembly, additional setup might be required. Please refer to relevant documentation for building Rust applications with WebAssembly.
+
 # Building the Application
 To build the application, follow these steps:
 
