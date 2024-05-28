@@ -14,7 +14,7 @@
 //!
 //! # Example
 //!
-//! This is a basic example of an Android application.
+//! This is an example of an Android application.
 //! Do not forget the `#[no_mangle]`
 //!
 //! ```rust
