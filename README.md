@@ -79,10 +79,6 @@ This command bundles the application along with its dependencies into a single d
     │       └── slint
     │           ├── Cargo.toml
     │           ├── LICENSES
-    │           │   ├── GPL-3.0-only.txt -> ../../../../LICENSES/GPL-3.0-only.txt
-    │           │   ├── LicenseRef-Slint-Royalty-free-1.1.md -> ../../../../LICENSES/LicenseRef-Slint-Royalty-free-1.1.md
-    │           │   ├── LicenseRef-Slint-commercial.md -> ../../../../LICENSES/LicenseRef-Slint-commercial.md
-    │           │   └── MIT.txt -> ../../../../LICENSES/MIT.txt
     │           ├── README.md
     │           ├── android.rs
     │           ├── compile_fail_tests.rs
