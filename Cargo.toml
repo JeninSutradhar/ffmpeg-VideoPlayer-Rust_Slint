@@ -1,0 +1,30 @@
+[package]
+name = "ffmpeg"
+version = "1.6.0"
+authors = ["Developer <jeninsutradhar@gmail.com>"]
+edition = "2021"
+build = "build.rs"
+license = "MIT"
+description = "Lightweight audio-video player built in Rust"
+publish = false
+
+[[bin]]
+path = "main.rs"
+name = "ffmpeg"
+
+[dependencies]
+slint = "1.9.1"
+ffmpeg-next = { version = "7.0.4" }
+smol = { version = "2.0.0" }
+anyhow = { version = "1.0" }
+futures = { version = "0.3.28" }
+cpal = "0.15.2"
+ringbuf = "0.3.3"
+bytemuck = "1.13.1"
+derive_more = "1.0.0"
+
+[build-dependencies]
+slint-build = "1.9.1"
+
+[package.metadata.bundle]
+name = "ffmpeg"

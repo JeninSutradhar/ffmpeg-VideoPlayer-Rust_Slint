@@ -1,0 +1,9 @@
+# Compiled binary files
+**/target/*
+target/
+
+# macOS specific files
+.DS_Store
+
+# logo files
+logo/*
