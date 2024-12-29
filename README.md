@@ -59,7 +59,7 @@ To build the application, follow these steps:
 1.  **Navigate to the directory** Inside your project root, run the command:
    ```bash
    cargo run --release
-
+   ```
 - This will execute the application and open up a window where you can select a video to be played.
 
 
