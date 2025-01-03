@@ -1,6 +1,3 @@
-// Copyright © SixtyFPS GmbH <info@slint.dev>
-// SPDX-License-Identifier: MIT
-
 use std::pin::Pin;
 
 use bytemuck::Pod;
@@ -11,7 +8,6 @@ use futures::future::OptionFuture;
 use futures::FutureExt;
 use ringbuf::ring_buffer::RbRef;
 use ringbuf::ring_buffer::RbWrite;
-// use ringbuf::{RbRef, RbWrite};
 use ringbuf::HeapRb;
 use std::future::Future;
 
