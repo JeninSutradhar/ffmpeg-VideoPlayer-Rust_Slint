@@ -215,19 +215,27 @@ impl FFmpegToCPalForwarder {
     }
 
     async fn stream(&mut self) {
-        loop {
-            let Ok(packet) = self.packet_receiver.recv().await else { break };
+    loop {
+        // Receive the next packet from the packet receiver channel.
+        let Ok(packet) = self.packet_receiver.recv().await else { break };
 
-            self.packet_decoder.send_packet(&packet).unwrap();
+        // Send the packet to the decoder.
+        self.packet_decoder.send_packet(&packet).unwrap();
 
-            let mut decoded_frame = ffmpeg_next::util::frame::Audio::empty();
+        // Create an empty frame to hold the decoded audio data.
+        let mut decoded_frame = ffmpeg_next::util::frame::Audio::empty();
 
-            while self.packet_decoder.receive_frame(&mut decoded_frame).is_ok() {
-                let mut resampled_frame = ffmpeg_next::util::frame::Audio::empty();
-                self.resampler.run(&decoded_frame, &mut resampled_frame).unwrap();
+        // Continue receiving decoded frames until there are no more available.
+        while self.packet_decoder.receive_frame(&mut decoded_frame).is_ok() {
+            // Create an empty frame to hold the resampled audio data.
+            let mut resampled_frame = ffmpeg_next::util::frame::Audio::empty();
 
-                self.ffmpeg_to_cpal_pipe.forward(resampled_frame).await;
-            }
+            // Resample the decoded audio frame to match the output format and channel layout.
+            self.resampler.run(&decoded_frame, &mut resampled_frame).unwrap();
+
+            // Forward the resampled audio frame to the CPAL audio output.
+            self.ffmpeg_to_cpal_pipe.forward(resampled_frame).await;
         }
     }
+}
 }
