@@ -3,9 +3,7 @@
 
 A lightweight audio-video player built in Rust using FFmpeg and Slint UI libraries. This project demonstrates how to use FFmpeg with Rust to play back video files in a simple user interface.
 
-⚠️ **Warning: Under Development** ⚠️
-
-This video player is working fine but currently under active development. I am working on improvements and will address known issues soon :)
+⚠️This video player is working fine but currently under active development. I am working on improvements and will address known issues soon :)⚠️
 
 ## Features
 
