@@ -2,6 +2,8 @@
 
 A professional audio-video player built in Rust using FFmpeg and Slint UI. Features a modern interface with full playback controls, audio support, and cross-platform compatibility.
 
+<img width="1006" height="740" alt="Screenshot from 2025-10-04 16-33-56" src="https://github.com/user-attachments/assets/7994dc7c-61d8-4429-9a73-8947359d8e21" />
+
 ## ✨ Features
 
 ### 🎬 Video Playback
