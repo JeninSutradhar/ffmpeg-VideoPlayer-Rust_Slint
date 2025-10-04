@@ -3,7 +3,7 @@
 
 use futures::{future::OptionFuture, FutureExt};
 
-use super::ControlCommand;
+use super::{ControlCommand, SharedClock};
 
 pub struct VideoPlaybackThread {
     control_sender: smol::channel::Sender<ControlCommand>,
@@ -15,10 +15,12 @@ impl VideoPlaybackThread {
     pub fn start(
         stream: &ffmpeg_next::format::stream::Stream,
         mut video_frame_callback: Box<dyn FnMut(&ffmpeg_next::util::frame::Video) + Send>,
+        shared_clock: SharedClock,
     ) -> Result<Self, anyhow::Error> {
         let (control_sender, control_receiver) = smol::channel::unbounded();
 
-        let (packet_sender, packet_receiver) = smol::channel::bounded(128);
+        // Limit buffer size to prevent memory exhaustion
+        let (packet_sender, packet_receiver) = smol::channel::bounded(64);
 
         let decoder_context = ffmpeg_next::codec::Context::from_parameters(stream.parameters())?;
         let mut packet_decoder = decoder_context.decoder().video()?;
@@ -34,15 +36,25 @@ impl VideoPlaybackThread {
 
                             smol::future::yield_now().await;
 
-                            packet_decoder.send_packet(&packet).unwrap();
+                            if let Err(e) = packet_decoder.send_packet(&packet) {
+                                eprintln!("Error sending packet to video decoder: {}", e);
+                                continue;
+                            }
 
                             let mut decoded_frame = ffmpeg_next::util::frame::Video::empty();
 
                             while packet_decoder.receive_frame(&mut decoded_frame).is_ok() {
-                                if let Some(delay) =
-                                    clock.convert_pts_to_instant(decoded_frame.pts())
-                                {
-                                    smol::Timer::after(delay).await;
+                                // Use shared clock for synchronization
+                                if let Some(delay) = clock.convert_pts_to_instant(decoded_frame.pts()) {
+                                    // Check if we should wait based on shared clock
+                                    if let Some(elapsed) = shared_clock.get_elapsed_time() {
+                                        if delay > elapsed {
+                                            smol::Timer::after(delay - elapsed).await;
+                                        }
+                                    } else {
+                                        // If not playing, don't wait
+                                        continue;
+                                    }
                                 }
 
                                 video_frame_callback(&decoded_frame);
@@ -100,7 +112,9 @@ impl Drop for VideoPlaybackThread {
     fn drop(&mut self) {
         self.control_sender.close();
         if let Some(receiver_join_handle) = self.receiver_thread.take() {
-            receiver_join_handle.join().unwrap();
+            if let Err(e) = receiver_join_handle.join() {
+                eprintln!("Error joining video receiver thread: {:?}", e);
+            }
         }
     }
 }

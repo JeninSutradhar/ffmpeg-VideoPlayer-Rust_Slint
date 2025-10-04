@@ -1,63 +1,240 @@
 // Copyright © SixtyFPS GmbH <info@slint.dev>
 // SPDX-License-Identifier: MIT
 
-import { VerticalBox, StyleMetrics, Palette } from "std-widgets.slint";
+import { VerticalBox, HorizontalBox, Button, LineEdit, Slider, StyleMetrics } from "std-widgets.slint";
 
 export component App inherits Window {
-    in property <image> video-frame <=> image.source;
-    in property <bool> playing;
+    in property <image> video-frame;
+    in property <bool> playing: false;
+    in property <string> status-text: "Ready";
+    in property <bool> loading: false;
+    in-out property <string> url-text: "";
+    in property <string> file-path: "";
+    in-out property <float> volume: 0.7;
+    in-out property <float> seek-position: 0.0;
+    in property <float> duration: 0.0;
+    in property <string> current-time: "0:00";
+    in property <string> total-time: "0:00";
 
     pure callback toggle-pause-play();
+    callback load-url();
+    callback select-file();
+    callback stop-video();
+    callback seek-to(float);
+    callback volume-changed(float);
 
-    preferred-width: 500px;
-    preferred-height: 300px;
-    min-width: 500px;
-    min-height: 300px;
-    title: "Slint FFmpeg Example";
-    background: #000000;
-    icon: @image-url("./logo/slint-logo-small-light.png");
-
-    states [
-        shown when area.has-hover || animation-tick() < 5s : {
-            controls.opacity: 1;
-            in {
-                animate controls.opacity {
-                    duration: 50ms;
-                }
-            }
-        }
-        hidden when !area.has-hover: {
-            controls.opacity: 0;
-            in {
-                animate controls.opacity {
-                    delay: 3s;
-                    duration: 500ms;
-                }
-            }
-        }
-    ]
+    preferred-width: 1000px;
+    preferred-height: 700px;
+    min-width: 800px;
+    min-height: 600px;
+    title: "FFmpeg Video Player";
+    background: #0a0a0a;
 
     VerticalBox {
-        image := Image {}
-    }
-// play-pause buttons
-    area := TouchArea {
-        width: 50%;
-        height: self.preferred-height;
-        y: root.height - self.height - 40px;
-        controls := Rectangle {
-            border-radius: 4px;
-            background: Palette.color-scheme == ColorScheme.dark ? #3737378c : #ffffff82;
-
-            Image {
-                width: 64px;
-                height: 64px;
-                source: root.playing ? @image-url("pause.svg") : @image-url("play.svg");
+        spacing: 0px;
+        padding: 0px;
+        
+        // Top toolbar
+        Rectangle {
+            height: 60px;
+            background: #1e1e1e;
+            border-color: #2d2d2d;
+            border-width: 1px;
+            
+            HorizontalBox {
+                padding: 10px;
+                spacing: 8px;
+                alignment: stretch;
+                
+                // URL input
+                LineEdit {
+                    text <=> root.url-text;
+                    placeholder-text: "Enter video URL or paste link...";
+                    horizontal-stretch: 2;
+                }
+                
+                Button {
+                    text: "Load URL";
+                    primary: true;
+                    clicked => {
+                        root.load-url();
+                    }
+                }
+                
+                Rectangle {
+                    width: 1px;
+                    background: #404040;
+                }
+                
+                Button {
+                    text: "📁 Browse";
+                    clicked => {
+                        root.select-file();
+                    }
+                }
             }
-
-            TouchArea {
-                clicked => {
-                    root.toggle-pause-play();
+        }
+        
+        // Video display area
+        Rectangle {
+            background: #000000;
+            vertical-stretch: 1;
+            
+            video-display := Image {
+                source: root.video-frame;
+                width: 100%;
+                height: 100%;
+                image-fit: contain;
+            }
+            
+            // Overlay status when loading
+            if root.loading: Rectangle {
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                
+                VerticalBox {
+                    alignment: center;
+                    
+                    Rectangle {
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 30px;
+                        background: #007acc;
+                        
+                        Text {
+                            text: "⏳";
+                            font-size: 32px;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+                    
+                    Text {
+                        text: root.status-text;
+                        color: white;
+                        font-size: 16px;
+                        horizontal-alignment: center;
+                    }
+                }
+            }
+        }
+        
+        // Control panel
+        Rectangle {
+            height: 120px;
+            background: #1e1e1e;
+            border-color: #2d2d2d;
+            border-width: 1px;
+            
+            VerticalBox {
+                padding: 10px;
+                spacing: 10px;
+                
+                // Seek bar
+                HorizontalBox {
+                    spacing: 10px;
+                    
+                    Text {
+                        text: root.current-time;
+                        color: #ffffff;
+                        vertical-alignment: center;
+                        font-size: 12px;
+                        width: 50px;
+                    }
+                    
+                    Slider {
+                        minimum: 0;
+                        maximum: root.duration > 0 ? root.duration : 100;
+                        value <=> root.seek-position;
+                        enabled: root.duration > 0;
+                        horizontal-stretch: 1;
+                        changed(value) => {
+                            root.seek-to(value);
+                        }
+                    }
+                    
+                    Text {
+                        text: root.total-time;
+                        color: #ffffff;
+                        vertical-alignment: center;
+                        font-size: 12px;
+                        width: 50px;
+                    }
+                }
+                
+                // Playback controls
+                HorizontalBox {
+                    spacing: 10px;
+                    alignment: start;
+                    
+                    // Play/Pause/Stop buttons
+                    HorizontalBox {
+                        spacing: 5px;
+                        
+                        Button {
+                            text: root.playing ? "⏸ Pause" : "▶ Play";
+                            primary: true;
+                            clicked => {
+                                root.toggle-pause-play();
+                            }
+                        }
+                        
+                        Button {
+                            text: "⏹ Stop";
+                            clicked => {
+                                root.stop-video();
+                            }
+                        }
+                    }
+                    
+                    Rectangle {
+                        width: 1px;
+                        background: #404040;
+                        height: 30px;
+                    }
+                    
+                    // Volume control
+                    HorizontalBox {
+                        spacing: 8px;
+                        width: 200px;
+                        
+                        Text {
+                            text: "🔊";
+                            font-size: 18px;
+                            vertical-alignment: center;
+                        }
+                        
+                        Slider {
+                            minimum: 0;
+                            maximum: 1.0;
+                            value <=> root.volume;
+                            horizontal-stretch: 1;
+                            changed(value) => {
+                                root.volume-changed(value);
+                            }
+                        }
+                        
+                        Text {
+                            text: Math.round(root.volume * 100) + "%";
+                            color: #ffffff;
+                            vertical-alignment: center;
+                            font-size: 12px;
+                            width: 40px;
+                        }
+                    }
+                    
+                    Rectangle {
+                        horizontal-stretch: 1;
+                    }
+                    
+                    // Status text
+                    Text {
+                        text: root.status-text;
+                        color: #888888;
+                        vertical-alignment: center;
+                        font-size: 12px;
+                    }
                 }
             }
         }
