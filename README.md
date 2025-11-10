@@ -4,35 +4,27 @@ A professional audio-video player built in Rust using FFmpeg and Slint UI. Featu
 
 <img width="1006" height="740" alt="Screenshot from 2025-10-04 16-33-56" src="https://github.com/user-attachments/assets/7994dc7c-61d8-4429-9a73-8947359d8e21" />
 
-## ✨ Features
+## Features
 
-### 🎬 Video Playback
+### Video Playback
 - **Multiple Input Sources**: Play videos from URLs or local files
 - **Format Support**: MP4, MKV, AVI, MOV, WebM, FLV, WMV, M4V
 - **High-Quality Rendering**: Hardware-accelerated video decoding with FFmpeg
 - **Aspect Ratio Preservation**: Videos display with correct proportions
 
-### 🔊 Audio Playback
+### Audio Playback
 - **Full Audio Support**: Synchronized audio-video playback
 - **Volume Control**: Real-time volume adjustment with slider
 - **Multi-format Audio**: Supports various audio codecs
 - **Audio-Video Sync**: Proper synchronization between audio and video
 
-### 🎮 Professional Controls
-- **Play/Pause/Stop**: Full playback control
-- **Seek Bar**: Jump to any position in the video
-- **Time Display**: Current time and total duration
-- **Volume Slider**: 0-100% volume control with percentage display
-- **Status Indicators**: Real-time playback status updates
-
-### 🎨 Modern UI
-- **Professional Design**: Clean, dark-themed interface
+### UI
 - **Responsive Layout**: Adapts to different window sizes
 - **Loading Animations**: Visual feedback during video loading
 - **File Browser**: Native file selection dialog
 - **URL Input**: Direct video URL support
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -71,7 +63,7 @@ cargo run --release
    - **From URL**: Paste video URL and click "Load URL"
    - **From File**: Click "Browse" to select local video file
 
-## 🎯 How to Use
+## How to Use
 
 ### Loading Videos
 1. **URL Playback**: 
